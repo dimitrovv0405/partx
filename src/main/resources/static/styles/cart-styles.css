@@ -1,0 +1,294 @@
+/* --- Cart Main Layout --- */
+.cart-main {
+    min-height: calc(100vh - 75px);
+    background: #0e0d09;
+    padding: 48px 40px;
+}
+
+.cart-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* --- Cart Items Section --- */
+.cart-items-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cart-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.cart-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+}
+
+.clear-cart-btn {
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: #6a6a6a;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-cart-btn:hover {
+    border-color: #bf5e5e;
+    color: #bf5e5e;
+}
+
+/* --- Cart Item Card --- */
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 20px 24px;
+    gap: 16px;
+    transition: border-color 0.2s;
+}
+
+.cart-item:hover {
+    border-color: #3a3a3a;
+}
+
+.cart-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.cart-item-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #f0f0f0;
+}
+
+.cart-item-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: #c8dc00;
+}
+
+/* --- Quantity Controls --- */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #111111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 6px 12px;
+}
+
+.qty-btn {
+    background: transparent;
+    border: none;
+    color: #f0f0f0;
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.2s;
+}
+
+.qty-btn:hover {
+    color: #c8dc00;
+}
+
+.qty-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: #f0f0f0;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* --- Item Subtotal & Remove --- */
+.cart-item-subtotal {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: #f0f0f0;
+    min-width: 70px;
+    text-align: right;
+}
+
+.remove-item-btn {
+    background: transparent;
+    border: none;
+    color: #3a3a3a;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 4px;
+}
+
+.remove-item-btn:hover {
+    color: #bf5e5e;
+}
+
+/* --- Empty Cart --- */
+.empty-cart-msg {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: #6a6a6a;
+    text-align: center;
+    padding: 60px 0;
+}
+
+.empty-cart-msg a {
+    color: #c8dc00;
+    text-decoration: none;
+}
+
+.empty-cart-msg a:hover {
+    color: #f0f0f0;
+}
+
+/* --- Order Summary --- */
+.cart-summary {
+    width: 320px;
+    min-width: 280px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 100px;
+}
+
+.summary-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: #8d8c8c;
+}
+
+.summary-divider {
+    border: none;
+    border-top: 1px solid #2a2a2a;
+    margin: 4px 0;
+}
+
+.total-row {
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    color: #f0f0f0;
+    font-weight: bold;
+}
+
+/* --- Messages --- */
+.error-msg {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: #bf5e5e;
+    min-height: 16px;
+    text-align: center;
+}
+
+.success-msg {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: #7abf5e;
+    min-height: 16px;
+    text-align: center;
+}
+
+/* --- Checkout Button --- */
+.checkout-btn {
+    width: 100%;
+    padding: 16px;
+    background: #c8dc00;
+    border: none;
+    border-radius: 10px;
+    color: #0e0d09;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.checkout-btn:hover {
+    background: #a8bc00;
+}
+
+.checkout-btn:disabled {
+    background: #3a3a3a;
+    color: #6a6a6a;
+    cursor: not-allowed;
+}
+
+/* --- Continue Shopping --- */
+.continue-shopping {
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #6a6a6a;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.continue-shopping:hover {
+    color: #f0f0f0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .cart-main {
+        padding: 24px 16px;
+    }
+
+    .cart-container {
+        flex-direction: column;
+    }
+
+    .cart-summary {
+        width: 100%;
+        min-width: unset;
+        position: static;
+    }
+
+    .cart-item {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .cart-item-subtotal {
+        min-width: unset;
+    }
+}

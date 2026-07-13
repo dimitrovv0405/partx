@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/styles/styles.css}">
+  <link rel="stylesheet" th:href="@{/styles/cart-styles.css}">
+  <title>Cart</title>
+</head>
+<body>
+
+<header>
+  <h1 class="web-logo"><a th:href="@{/home}">PART<span>X</span></a></h1>
+  <nav>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <ul class="nav-links" id="nav-links">
+      <li><a th:href="@{/shop}">Shop</a></li>
+      <li><a th:href="@{/orders}">My Orders</a></li>
+
+      <li th:if="${userRole == 'FREELANCER'}">
+        <a th:href="@{/freelancer}">My Products</a>
+      </li>
+      <li>
+        <form th:action="@{/auth/logout}" method="post">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+          <button type="submit">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </nav>
+  <div class="header-actions">
+    <div class="header-balance-badge" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.07); padding: 6px 12px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 14px; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+      <span style="color: #ff3e3e; margin-right: 6px;">💳</span>
+      <span th:text="${balance != null ? '$' + balance : '$0.00'}"></span>
+    </div>
+
+    <form th:action="@{/users/profile}" method="get">
+      <button type="submit"
+              class="login-btn"
+              id="user-btn"
+              th:text="${username != null ? username : '☺'}">
+      </button>
+    </form>
+    <button class="cart-btn" th:onclick="|window.location.href='@{/cart}'|">
+      🛒 Cart
+    </button>
+  </div>
+</header>
+
+<main class="cart-main">
+
+  <div class="cart-container">
+
+    <!-- Cart Items -->
+    <section class="cart-items-section">
+      <div class="cart-header-row">
+        <h2 class="cart-title">Your Cart</h2>
+        <button class="clear-cart-btn" onclick="clearCart()">Clear All</button>
+      </div>
+
+      <div id="cart-items-list">
+        <!-- Populated by cart.js from localStorage -->
+      </div>
+
+      <p class="empty-cart-msg" id="empty-cart-msg" style="display:none;">
+        Your cart is empty. <a th:href="@{/shop}">Browse the shop</a>
+      </p>
+    </section>
+
+    <!-- Order Summary -->
+    <aside class="cart-summary">
+      <h3 class="summary-title">Order Summary</h3>
+
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="subtotal">$0.00</span>
+      </div>
+      <div class="summary-row">
+        <span>Shipping</span>
+        <span id="shipping">$0.00</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-row total-row">
+        <span>Total</span>
+        <span id="total">$0.00</span>
+      </div>
+
+      <!-- Managed by cart.js -->
+      <p class="error-msg" id="checkout-error" style="display:none;"></p>
+      <p class="success-msg" id="checkout-success" style="display:none;"></p>
+
+      <button class="checkout-btn" id="checkout-btn" onclick="handleCheckout()">
+        Place Order
+      </button>
+
+      <a th:href="@{/shop}" class="continue-shopping">← Continue Shopping</a>
+    </aside>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 PARTX.com — All rights reserved.</p>
+</footer>
+
+<script th:src="@{/scripts/main.js}"></script>
+<script th:src="@{/scripts/cart.js}"></script>
+
+</body>
+</html>

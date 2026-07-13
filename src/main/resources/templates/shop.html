@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/shop-styles.css}">
+    <title>Shop</title>
+</head>
+<body>
+
+<header>
+    <h1 class="web-logo"><a th:href="@{/home}">PART<span>X</span></a></h1>
+    <nav>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a th:href="@{/shop}">Shop</a></li>
+            <li><a th:href="@{/orders}">My Orders</a></li>
+
+            <li th:if="${userRole == 'FREELANCER'}">
+                <a th:href="@{/freelancer}">My Products</a>
+            </li>
+            <li>
+                <form th:action="@{/auth/logout}" method="post">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <div class="header-actions">
+        <div class="header-balance-badge" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.07); padding: 6px 12px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 14px; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+            <span style="color: #ff3e3e; margin-right: 6px;">💳</span>
+            <span th:text="${balance != null ? '$' + balance : '$0.00'}"></span>
+        </div>
+
+        <form th:action="@{/users/profile}" method="get">
+            <button type="submit"
+                    class="login-btn"
+                    id="user-btn"
+                    th:text="${username != null ? username : '☺'}">
+            </button>
+        </form>
+        <button class="cart-btn" th:onclick="|window.location.href='@{/cart}'|">
+            🛒 Cart
+        </button>
+    </div>
+</header>
+
+<main class="shop-main">
+
+    <!-- Sidebar Filters -->
+    <aside class="shop-sidebar">
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-label">Search</h4>
+            <input type="text"
+                   id="search-input"
+                   class="sidebar-search"
+                   placeholder="Search parts..."
+                   oninput="applyFilters()">
+        </div>
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-label">Category</h4>
+            <ul class="filter-list" id="category-filter">
+                <li th:class="${param.categoryId == null || #strings.isEmpty(param.categoryId)} ? 'filter-item active' : 'filter-item'"
+                    data-id="all"
+                    onclick="selectCategory(this)">All</li>
+
+                <li th:each="category : ${categories}"
+                    th:class="${param.categoryId != null && #strings.toString(param.categoryId[0]) == #strings.toString(category.id)} ? 'filter-item active' : 'filter-item'"
+                    th:data-id="${category.id}"
+                    th:text="${category.name}"
+                    onclick="selectCategory(this)">
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-label">Price Range</h4>
+            <div class="price-range">
+                <input type="number" id="min-price" placeholder="Min $" min="0" oninput="applyFilters()">
+                <span>—</span>
+                <input type="number" id="max-price" placeholder="Max $" min="0" oninput="applyFilters()">
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-label">Availability</h4>
+            <label class="checkbox-label">
+                <input type="checkbox" id="in-stock-only" onchange="applyFilters()">
+                In stock only
+            </label>
+        </div>
+
+        <button class="clear-filters-btn" onclick="clearFilters()">Clear Filters</button>
+
+    </aside>
+
+    <!-- Products Area -->
+    <section class="shop-content">
+
+        <div class="shop-toolbar">
+            <p class="results-count" id="results-count"
+               th:text="${products != null ? #lists.size(products) + ' Results' : '0 Results'}">
+            </p>
+            <select class="sort-select" id="sort-select" onchange="applyFilters()">
+                <option value="default">Sort: Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+                <option value="name-desc">Name: Z to A</option>
+            </select>
+        </div>
+
+        <div class="products-grid" id="products-grid">
+            <div th:each="product : ${products}"
+                 class="product-card"
+                 th:data-id="${product.id}"
+                 th:data-name="${product.name}"
+                 th:data-price="${product.price}"
+                 th:data-category="${product.category != null ? product.category.id : ''}"
+                 th:data-stock="${product.stockQuantity}">
+                <a th:href="@{/product/{id}(id=${product.id})}">
+                    <div th:if="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl)}" class="product-img-container">
+                        <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img"/>
+                    </div>
+                    <div th:unless="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl)}" class="product-img-placeholder">
+                        🔧
+                    </div>
+                    <div class="product-info">
+                        <h4 th:text="${product.name}"></h4>
+                        <p class="product-category"
+                           th:text="${product.category != null ? product.category.name : 'Uncategorized'}">
+                        </p>
+                        <p class="product-price" th:text="'$' + ${product.price}"></p>
+                        <p class="product-stock"
+                           th:text="${product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}"
+                           th:classappend="${product.stockQuantity > 0 ? ' in-stock' : ' out-of-stock'}">
+                        </p>
+                    </div>
+                </a>
+                <button class="add-to-cart-btn"
+                        th:data-id="${product.id}"
+                        th:data-name="${product.name}"
+                        th:data-price="${product.price}"
+                        onclick="addToCart(this)">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2025 PARTX.com — All rights reserved.</p>
+</footer>
+
+<script th:src="@{/scripts/main.js}"></script>
+<script th:src="@{/scripts/shop.js}"></script>
+
+</body>
+</html>

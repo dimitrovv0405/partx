@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <title>Home</title>
+</head>
+<body>
+
+<header>
+    <h1 class="web-logo"><a th:href="@{/home}">PART<span>X</span></a></h1>
+    <nav>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a th:href="@{/shop}">Shop</a></li>
+            <li><a th:href="@{/orders}">My Orders</a></li>
+
+            <li th:if="${userRole == 'FREELANCER'}">
+                <a th:href="@{/freelancer}">My Products</a>
+            </li>
+            <li>
+                <form th:action="@{/auth/logout}" method="post">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <div class="header-actions">
+        <div class="header-balance-badge" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.07); padding: 6px 12px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 14px; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+            <span style="color: #ff3e3e; margin-right: 6px;">💳</span>
+            <span th:text="${balance != null ? '$' + balance : '$0.00'}"></span>
+        </div>
+
+        <form th:action="@{/users/profile}" method="get">
+            <button type="submit"
+                    class="login-btn"
+                    id="user-btn"
+                    th:text="${username != null ? username : '☺'}">
+            </button>
+        </form>
+        <button class="cart-btn" th:onclick="|window.location.href='@{/cart}'|">
+            🛒 Cart
+        </button>
+    </div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <div class="hero-content">
+            <p class="slogan">⎯⎯ Premium auto parts</p>
+            <h1 class="main-title">BUILD FOR THE <span>ROAD</span></h1>
+            <p class="description">
+                Performance components engineered to the extreme. Every part tested,
+                every spec verified. Your machine deserves nothing less.
+            </p>
+            <div class="landing-btn" style="justify-content: flex-start;">
+                <a th:href="@{/shop}" class="landing-btn primary">Shop Now</a>
+            </div>
+
+            <div class="info-cards">
+                <div class="stat-card">
+                    <p class="stat-count" id="parts-count"
+                       th:text="${totalProducts != null ? totalProducts + '+' : '...'}">
+                    </p>
+                    <p class="stat-text">Parts in Stock</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-count">98%</p>
+                    <p class="stat-text">Satisfaction Rate</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-count">24H</p>
+                    <p class="stat-text">Fast Shipping</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-count">5yr</p>
+                    <p class="stat-text">Warranty</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-categories">
+        <h3 class="section-label">Featured Categories</h3>
+        <div class="categories" id="categories-container">
+            <div th:each="category : ${categories}" class="category-card">
+                <a th:href="@{/shop(categoryId=${category.id})}" th:text="${category.name}"></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-products">
+        <h3 class="section-label">Featured Products</h3>
+        <div class="products-grid" id="products-grid">
+            <div th:each="product : ${featuredProducts}" class="product-card">
+                <a th:href="@{/product/{id}(id=${product.id})}">
+                    <div th:if="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl)}" class="product-img-container">
+                        <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img"/>
+                    </div>
+                    <div th:unless="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl)}" class="product-img-placeholder">
+                        🔧
+                    </div>
+                    <div class="product-info">
+                        <h4 th:text="${product.name}"></h4>
+                        <p class="product-category" th:text="${product.category != null ? product.category.name : 'Uncategorized'}"></p>
+                        <p class="product-price" th:text="'$' + ${product.price}"></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div style="text-align:center; margin-top: 40px;">
+            <a th:href="@{/shop}" class="landing-btn secondary">View All Products</a>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2025 PARTX.com — All rights reserved.</p>
+</footer>
+
+<script th:src="@{/scripts/main.js}"></script>
+
+</body>
+</html>

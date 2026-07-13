@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/product-detail-styles.css}">
+    <title th:text="'PARTX — ' + ${product != null ? product.name : 'Product'}">PARTX — Product</title>
+</head>
+<body>
+
+<header>
+    <h1 class="web-logo"><a th:href="@{/home}">PART<span>X</span></a></h1>
+    <nav>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a th:href="@{/shop}">Shop</a></li>
+            <li><a th:href="@{/orders}">My Orders</a></li>
+
+            <li th:if="${userRole == 'FREELANCER'}">
+                <a th:href="@{/freelancer}">My Products</a>
+            </li>
+            <li>
+                <form th:action="@{/auth/logout}" method="post">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <div class="header-actions">
+        <div class="header-balance-badge" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.07); padding: 6px 12px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 14px; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+            <span style="color: #ff3e3e; margin-right: 6px;">💳</span>
+            <span th:text="${balance != null ? '$' + balance : '$0.00'}"></span>
+        </div>
+
+        <form th:action="@{/users/profile}" method="get">
+            <button type="submit"
+                    class="login-btn"
+                    id="user-btn"
+                    th:text="${username != null ? username : '☺'}">
+            </button>
+        </form>
+        <button class="cart-btn" th:onclick="|window.location.href='@{/cart}'|">
+            🛒 Cart
+        </button>
+    </div>
+</header>
+
+<main class="pd-main">
+
+    <!-- Breadcrumb -->
+    <div class="pd-breadcrumb">
+        <a th:href="@{/home}">Home</a>
+        <span>/</span>
+        <a th:href="@{/shop}">Shop</a>
+        <span>/</span>
+        <span id="pd-breadcrumb-name"
+              th:text="${product != null ? product.name : 'Product'}">
+            </span>
+    </div>
+
+    <!-- Product Section -->
+    <section class="pd-section" id="pd-section">
+
+        <!-- Product Content -->
+        <div class="pd-content" id="pd-content" th:if="${product != null}">
+
+            <div class="pd-image-wrapper">
+                <img class="pd-image"
+                     id="pd-image"
+                     th:src="${product.imageUrl != null ? product.imageUrl : '/images/placeholder.png'}"
+                     th:alt="${product.name}">
+                <span class="pd-category-badge"
+                      id="pd-category"
+                      th:text="${product.category != null ? product.category.name : '—'}">
+                    </span>
+            </div>
+
+            <div class="pd-info">
+                <h1 class="pd-name" id="pd-name" th:text="${product.name}"></h1>
+
+                <div class="pd-meta-row">
+                        <span class="pd-price"
+                              id="pd-price"
+                              th:text="'$' + ${product.price}">
+                        </span>
+                    <span class="pd-stock-badge"
+                          id="pd-stock-badge"
+                          th:text="${product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}"
+                          th:classappend="${product.stockQuantity > 0 ? 'in-stock' : 'out-of-stock'}">
+                        </span>
+                </div>
+
+                <p class="pd-description"
+                   id="pd-description"
+                   th:text="${product.description}">
+                </p>
+
+                <div class="pd-divider"></div>
+
+                <div class="pd-qty-row">
+                    <label class="pd-qty-label">Quantity</label>
+                    <div class="pd-qty-control">
+                        <button class="pd-qty-btn" onclick="changeQty(-1)">−</button>
+                        <span class="pd-qty-value" id="pd-qty">1</span>
+                        <button class="pd-qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+
+                <div class="pd-actions">
+                    <button class="pd-cart-btn"
+                            id="pd-cart-btn"
+                            th:disabled="${product.stockQuantity <= 0}"
+                            onclick="handleAddToCart()">
+                        Add to Cart
+                    </button>
+                    <button class="pd-wishlist-btn"
+                            id="pd-wishlist-btn"
+                            onclick="toggleWishlist()"
+                            title="Save for later">♡
+                    </button>
+                </div>
+
+                <p class="pd-feedback" id="pd-feedback"></p>
+
+                <div class="pd-specs" id="pd-specs">
+                    <p class="pd-specs-title">Product Details</p>
+                    <ul class="pd-specs-list">
+                        <li>
+                            <span>Category</span>
+                            <span id="spec-category"
+                                  th:text="${product.category != null ? product.category.name : '—'}">
+                                </span>
+                        </li>
+                        <li>
+                            <span>Stock</span>
+                            <span id="spec-stock" th:text="${product.stockQuantity}"></span>
+                        </li>
+                        <li>
+                            <span>Product ID</span>
+                            <span id="spec-id" th:text="${product.id}"></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Hidden data attributes for product-detail.js -->
+                <div id="pd-data"
+                     style="display:none;"
+                     th:data-id="${product.id}"
+                     th:data-name="${product.name}"
+                     th:data-price="${product.price}"
+                     th:data-stock="${product.stockQuantity}"
+                     th:data-image="${product.imageUrl}">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="pd-error" id="pd-error" th:if="${product == null}">
+            <p class="pd-error-title">Product Not Found</p>
+            <p class="pd-error-msg">This product may have been removed or the link is invalid.</p>
+            <button class="pd-back-btn"
+                    th:onclick="|window.location.href='[[@{/shop}]]'|">
+                ← Back to Shop
+            </button>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2025 PARTX.com — All rights reserved.</p>
+</footer>
+
+<script th:src="@{/scripts/main.js}"></script>
+<script th:src="@{/scripts/product-detail.js}"></script>
+
+</body>
+</html>

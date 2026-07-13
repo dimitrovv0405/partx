@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/profile-styles.css}">
+    <title>Profile</title>
+</head>
+<body>
+
+<header>
+    <h1 class="web-logo"><a th:href="@{/home}">PART<span>X</span></a></h1>
+    <nav>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a th:href="@{/shop}">Shop</a></li>
+            <li><a th:href="@{/orders}">My Orders</a></li>
+        </ul>
+    </nav>
+    <div class="header-actions">
+        <form th:action="@{/users/profile}" method="get">
+            <button type="submit"
+                    class="login-btn"
+                    id="user-btn"
+                    th:text="${username != null ? username : '☺'}">
+            </button>
+        </form>
+        <button class="cart-btn"
+                th:onclick="|window.location.href='@{/cart}'|">
+            🛒 Cart
+        </button>
+    </div>
+</header>
+
+<main class="profile-main">
+    <div class="profile-container">
+
+        <aside class="profile-sidebar">
+            <form th:action="@{/users/profile/upload-picture}" method="POST" enctype="multipart/form-data" id="avatar-form">
+
+                <div class="profile-avatar" onclick="document.getElementById('avatar-upload').click();" style="cursor: pointer;">
+
+                    <img id="avatar-preview"
+                         th:if="${profilePic != null}"
+                         th:src="${profilePic}"
+                         alt="Profile Picture">
+
+                    <span id="avatar-initials"
+                          th:if="${profilePic == null}"
+                          th:text="${#strings.toUpperCase(#strings.substring(username, 0, 1))}">
+                    </span>
+
+                    <div class="avatar-overlay">Edit</div>
+                </div>
+
+                <input type="file" id="avatar-upload" name="profile-pic-input" accept="image/*" style="display: none;" onchange="submitAvatarForm()">
+            </form>
+
+            <p class="profile-name" id="sidebar-name" th:text="${username}"></p>
+            <p class="profile-role-badge" id="sidebar-role" th:text="${userRole}"></p>
+
+            <nav class="profile-nav">
+                <button class="profile-nav-btn active" data-tab="info" onclick="switchTab(this)">Change Account Info</button>
+                <button class="profile-nav-btn" data-tab="password" onclick="switchTab(this)">Change Password</button>
+                <button class="profile-nav-btn" data-tab="wallet" onclick="switchTab(this)">Wallet Balance</button>
+            </nav>
+        </aside>
+
+        <section class="profile-content">
+
+            <div class="profile-tab active" id="tab-info">
+                <h2 class="tab-title">Change Account Info</h2>
+
+                <form class="profile-form" id="info-form" th:action="@{/users/profile/update-info}" method="POST">
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username"
+                               placeholder="Username"
+                               th:value="${username}"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email"
+                               placeholder="Email"
+                               th:value="${email}"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <div class="select-wrapper">
+                            <select id="role" name="role" th:value="${userRole}">
+                                <option value="FREELANCER" th:selected="${userRole == 'FREELANCER'}">Freelancer</option>
+                                <option value="CLIENT" th:selected="${userRole == 'CLIENT'}">Client</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <p class="form-error" id="info-error"
+                       th:if="${infoError}"
+                       th:text="${infoError}">
+                    </p>
+                    <p class="form-success" id="info-success"
+                       th:if="${infoSuccess}"
+                       th:text="${infoSuccess}">
+                    </p>
+
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="profile-tab" id="tab-password">
+                <h2 class="tab-title">Change Password</h2>
+
+                <form class="profile-form" id="password-form" th:action="@{/users/profile/change-password}" method="POST">
+
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password" name="current-password"
+                               placeholder="Current password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" name="new-password"
+                               placeholder="New password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password"
+                               placeholder="Confirm new password" required>
+                    </div>
+
+                    <p class="form-error" id="password-error"
+                       th:if="${passwordError}"
+                       th:text="${passwordError}">
+                    </p>
+                    <p class="form-success" id="password-success"
+                       th:if="${passwordSuccess}"
+                       th:text="${passwordSuccess}">
+                    </p>
+
+                    <button type="submit" class="save-btn">Update Password</button>
+                </form>
+            </div>
+
+            <div class="profile-tab" id="tab-wallet">
+                <h2 class="tab-title">Wallet Balance</h2>
+
+                <div class="wallet-card">
+                    <div class="wallet-balance-info">
+                        <span class="wallet-label">Available Balance</span>
+                        <h3 class="wallet-amount" th:text="${balance != null ? '$' + balance : '$0.00'}"></h3>
+                    </div>
+
+                    <form class="add-money-form" id="add-money-form" th:action="@{/users/profile/add-money}" method="POST" style="display: none !important; max-width: 250px; gap: 10px;">
+                        <div class="form-group" style="margin: 0;">
+                            <input type="number" name="amount" step="0.01" min="0.01" placeholder="Enter amount ($)" required>
+                        </div>
+                        <button type="submit" class="save-btn" style="padding: 10px 20px; font-size: 16px;">Confirm</button>
+                    </form>
+
+                    <button class="add-money-btn" id="initiate-add-btn" onclick="showMoneyInput()">Add Money</button>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <p>© 2025 PARTX.com — All rights reserved.</p>
+</footer>
+
+<script th:src="@{/scripts/main.js}"></script>
+<script th:src="@{/scripts/profile.js}"></script>
+
+</body>
+</html>

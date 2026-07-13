@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/styles/styles.css}">
+  <title>PARTX.com</title>
+</head>
+<body>
+
+<header>
+  <h1 class="web-logo"><a th:href="@{/}">PART<span>X</span></a></h1>
+  <nav>
+    <ul class="nav-links">
+      <li><a th:href="@{/auth/login}">Login</a></li>
+      <li><a th:href="@{/auth/register}">Register</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <!-- Hero Section -->
+  <section class="landing-hero">
+    <div class="landing-hero-content">
+      <p class="slogan">⎯⎯ The Auto Parts Marketplace</p>
+      <h1 class="main-title">WELCOME TO <span>PARTX</span></h1>
+      <p class="description">
+        PARTX is your go-to marketplace for premium auto parts.
+        Browse thousands of verified components from trusted sellers,
+        place orders with confidence, and get your vehicle back on the road — fast.
+      </p>
+      <div class="landing-btns">
+        <a th:href="@{/auth/register}" class="landing-btn primary">Create an Account</a>
+        <a th:href="@{/auth/login}" class="landing-btn secondary">Sign In</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- What is PARTX -->
+  <section class="about-section">
+    <h2 class="section-title">What is PARTX?</h2>
+    <div class="about-cards">
+      <div class="about-card">
+        <p class="about-icon">🔧</p>
+        <h4>For Buyers</h4>
+        <p>Browse thousands of auto parts across multiple categories.
+          Find exactly what your vehicle needs and place orders in seconds.</p>
+      </div>
+      <div class="about-card">
+        <p class="about-icon">🏪</p>
+        <h4>For Sellers</h4>
+        <p>List your parts, manage your inventory, and reach buyers actively
+          looking for what you sell. Simple, fast, and reliable.</p>
+      </div>
+      <div class="about-card">
+        <p class="about-icon">🛡️</p>
+        <h4>Verified Quality</h4>
+        <p>Every listing is reviewed. Every spec is verified.
+          Shop with confidence knowing you are getting exactly what is described.</p>
+      </div>
+      <div class="about-card">
+        <p class="about-icon">🚚</p>
+        <h4>Fast Shipping</h4>
+        <p>24-hour dispatch on in-stock items.
+          Get your parts delivered quickly so your vehicle is not sitting idle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats-section">
+    <div class="stat">
+      <p class="stat-count" th:text="${totalProducts != null ? totalProducts + '+' : '...'}"></p>
+      <p class="stat-text">Parts in Stock</p>
+    </div>
+    <div class="stat">
+      <p class="stat-count">98%</p>
+      <p class="stat-text">Satisfaction Rate</p>
+    </div>
+    <div class="stat">
+      <p class="stat-count">24H</p>
+      <p class="stat-text">Fast Shipping</p>
+    </div>
+    <div class="stat">
+      <p class="stat-count">5yr</p>
+      <p class="stat-text">Warranty</p>
+    </div>
+  </section>
+
+  <!-- Featured Products — dynamic from IndexController -->
+<!--  <section class="featured-section">-->
+<!--    <h2 class="section-title">Featured Parts</h2>-->
+<!--    <div class="products-grid">-->
+<!--      <div class="product-card" th:each="product : ${featuredProducts}">-->
+<!--        <h4 th:text="${product.name}">Product Name</h4>-->
+<!--        <p th:text="${product.description}">Description</p>-->
+<!--        <p class="price" th:text="'$' + ${product.price}">$0.00</p>-->
+<!--        <a th:href="@{/product/{id}(id=${product.id})}" class="landing-btn primary">View</a>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </section>-->
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="main-title">READY TO <span>START?</span></h2>
+    <p class="description">Join thousands of buyers and sellers already on PARTX.</p>
+    <div class="landing-btns">
+      <a th:href="@{/register}" class="landing-btn primary">Get Started</a>
+      <a th:href="@{/login}" class="landing-btn secondary">Sign In</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2025 PARTX.com — All rights reserved.</p>
+</footer>
+
+</body>
+</html>

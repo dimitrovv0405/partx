@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/orders-styles.css}">
+    <title>My Orders</title>
+</head>
+<body>
+
+<header>
+    <h1 class="web-logo"><a th:href="@{/home}">PART<span>X</span></a></h1>
+    <nav>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a th:href="@{/shop}">Shop</a></li>
+            <li><a th:href="@{/orders}">My Orders</a></li>
+
+            <li th:if="${userRole == 'FREELANCER'}">
+                <a th:href="@{/freelancer}">My Products</a>
+            </li>
+            <li>
+                <form th:action="@{/auth/logout}" method="post">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <div class="header-actions">
+        <div class="header-balance-badge" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.07); padding: 6px 12px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 14px; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+            <span style="color: #ff3e3e; margin-right: 6px;">💳</span>
+            <span th:text="${balance != null ? '$' + balance : '$0.00'}"></span>
+        </div>
+
+        <form th:action="@{/users/profile}" method="get">
+            <button type="submit"
+                    class="login-btn"
+                    id="user-btn"
+                    th:text="${username != null ? username : '☺'}">
+            </button>
+        </form>
+        <button class="cart-btn" th:onclick="|window.location.href='@{/cart}'|">
+            🛒 Cart
+        </button>
+    </div>
+</header>
+
+<main class="orders-main">
+
+    <div class="orders-container">
+
+        <div class="orders-header-row">
+            <h2 class="orders-title">My Orders</h2>
+            <p class="orders-subtitle">Track and review your past purchases</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="orders-toolbar">
+            <div class="orders-filter-group">
+                <button class="status-filter-btn active" data-status="all" onclick="selectStatus(this)">All</button>
+                <button class="status-filter-btn" data-status="PENDING" onclick="selectStatus(this)">Pending</button>
+                <button class="status-filter-btn" data-status="PROCESSING" onclick="selectStatus(this)">Processing</button>
+                <button class="status-filter-btn" data-status="SHIPPED" onclick="selectStatus(this)">Shipped</button>
+                <button class="status-filter-btn" data-status="DELIVERED" onclick="selectStatus(this)">Delivered</button>
+                <button class="status-filter-btn" data-status="CANCELLED" onclick="selectStatus(this)">Cancelled</button>
+            </div>
+            <select class="sort-select" id="sort-select" onchange="renderOrders()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="total-desc">Total: High to Low</option>
+                <option value="total-asc">Total: Low to High</option>
+            </select>
+        </div>
+
+        <!-- Orders List -->
+        <div id="orders-list">
+            <div th:each="order : ${orders}"
+                 class="order-card"
+                 th:data-status="${order.status}"
+                 th:data-total="${order.totalPrice}"
+                 th:data-date="${order.createdAt}">
+                <div class="order-card-header">
+                    <div>
+                        <p class="order-id" th:text="'Order #' + ${order.id}"></p>
+                        <p class="order-date" th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}"></p>
+                    </div>
+                    <div>
+                        <span class="order-status-badge"
+                              th:text="${order.status}"
+                              th:classappend="'status-' + ${#strings.toLowerCase(order.status)}">
+                        </span>
+                    </div>
+                    <div>
+                        <p class="order-total" th:text="'$' + ${order.totalPrice}"></p>
+                    </div>
+                    <button class="view-details-btn"
+                            th:data-id="${order.id}"
+                            onclick="openModal(this)">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <p class="empty-orders-msg" id="empty-orders-msg"
+           th:if="${orders == null or #lists.isEmpty(orders)}">
+            No orders found. <a th:href="@{/shop}">Start shopping</a>
+        </p>
+
+    </div>
+
+</main>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <button class="modal-close-btn" onclick="closeModal()">✕</button>
+        <h3 class="modal-title">Order Details</h3>
+        <div id="modal-content"></div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 PARTX.com — All rights reserved.</p>
+</footer>
+
+<script th:src="@{/scripts/main.js}"></script>
+<script th:src="@{/scripts/orders.js}"></script>
+
+</body>
+</html>

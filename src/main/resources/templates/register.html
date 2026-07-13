@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/login-styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/register-styles.css}">
+    <title>Register</title>
+</head>
+<body>
+
+<header>
+    <h1 class="web-logo"><a th:href="@{/}">PART<span>X</span></a></h1>
+    <nav>
+        <ul class="nav-links">
+            <li><a th:href="@{/auth/login}">Login</a></li>
+            <li><a th:href="@{/auth/register}" class="active">Register</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="auth-main">
+    <div class="auth-card register-card">
+
+        <div class="auth-header">
+            <h1 class="web-logo-inline">PART<span>X</span></h1>
+            <p class="auth-subtitle">Create your account</p>
+        </div>
+
+        <form th:action="@{/auth/register}" th:object="${userRegisterData}" method="post">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input
+                            type="text"
+                            id="firstName"
+                            th:field="*{firstName}"
+                            placeholder="First name"
+                            autocomplete="given-name"
+                    >
+                    <p class="error-msg"
+                       th:if="${#fields.hasErrors('firstName')}"
+                       th:errors="*{firstName}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input
+                            type="text"
+                            id="lastName"
+                            th:field="*{lastName}"
+                            placeholder="Last name"
+                            autocomplete="family-name"
+                    >
+                    <p class="error-msg"
+                       th:if="${#fields.hasErrors('lastName')}"
+                       th:errors="*{lastName}"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                        type="text"
+                        id="username"
+                        th:field="*{username}"
+                        placeholder="Choose a username"
+                        autocomplete="username"
+                >
+                <p class="error-msg"
+                   th:if="${#fields.hasErrors('username')}"
+                   th:errors="*{username}"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                        type="email"
+                        id="email"
+                        th:field="*{email}"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                >
+                <p class="error-msg"
+                   th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                        type="password"
+                        id="password"
+                        th:field="*{password}"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                >
+                <p class="error-msg"
+                   th:if="${#fields.hasErrors('password')}"
+                   th:errors="*{password}"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input
+                        type="password"
+                        id="confirmPassword"
+                        th:field="*{confirmPassword}"
+                        placeholder="Repeat your password"
+                        autocomplete="new-password"
+                >
+                <p class="error-msg"
+                   th:if="${#fields.hasErrors('confirmPassword')}"
+                   th:errors="*{confirmPassword}"></p>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="userType">User Type</label>
+                    <select id="userType" th:field="*{userType}">
+                        <option value="" disabled selected>Select type</option>
+                        <option value="FREELANCER">Freelancer</option>
+                        <option value="CLIENT">Client</option>
+                    </select>
+                    <p class="error-msg"
+                       th:if="${#fields.hasErrors('userType')}"
+                       th:errors="*{userType}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="countryOrigin">Country</label>
+                    <select id="countryOrigin" th:field="*{countryOrigin}">
+                        <option value="" disabled selected>Select country</option>
+                        <option value="BULGARIA">Bulgaria</option>
+                        <option value="LEBANON">Lebanon</option>
+                        <option value="USA">USA</option>
+                        <option value="GERMANY">Germany</option>
+                        <option value="ITALY">Italy</option>
+                        <option value="ALBANIA">Albania</option>
+                    </select>
+                    <p class="error-msg"
+                       th:if="${#fields.hasErrors('countryOrigin')}"
+                       th:errors="*{countryOrigin}"></p>
+                </div>
+            </div>
+
+            <p class="error-msg"
+               th:if="${registerError}"
+               th:text="${registerError}"></p>
+
+            <button type="submit" class="auth-submit-btn">
+                Create Account
+            </button>
+
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a th:href="@{/auth/login}">Sign in here</a>
+        </p>
+    </div>
+</main>
+</body>
+</html>

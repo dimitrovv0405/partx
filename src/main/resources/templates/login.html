@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/login-styles.css}">
+    <title>Login</title>
+</head>
+<body>
+
+<header>
+    <h1 class="web-logo"><a th:href="@{/}">PART<span>X</span></a></h1>
+    <nav>
+        <ul class="nav-links">
+            <li><a th:href="@{/auth/login}" class="active">Login</a></li>
+            <li><a th:href="@{/auth/register}">Register</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="auth-main">
+    <div class="auth-card">
+
+        <div class="auth-header">
+            <h1 class="web-logo-inline">PART<span>X</span></h1>
+            <p class="auth-subtitle">Sign in to your account</p>
+        </div>
+
+        <form th:action="@{/auth/login}" th:object="${userLoginData}" method="post">
+
+            <div th:if="${param.error}" style="color: red;">
+                <p>Invalid username or password! Please try again!</p>
+            </div>
+
+            <br>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                        type="email"
+                        id="email"
+                        th:field="*{email}"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                >
+                <p class="error-msg" th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                        type="password"
+                        id="password"
+                        th:field="*{password}"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                >
+                <p class="error-msg" th:if="${#fields.hasErrors('password')}"
+                   th:errors="*{password}"></p>
+            </div>
+
+            <p class="error-msg"
+               th:if="${loginError}"
+               th:text="${loginError}"></p>
+
+            <button type="submit" class="auth-submit-btn">
+                Sign In
+            </button>
+
+        </form>
+
+        <p class="auth-switch">
+            Don't have an account? <a th:href="@{/auth/register}">Register here</a>
+        </p>
+
+    </div>
+</main>
+
+</body>
+</html>
