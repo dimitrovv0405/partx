@@ -1,5 +1,6 @@
 package com.example.partx.models.entities.order;
 
+import com.example.partx.models.entities.orderItem.OrderItemEntity;
 import com.example.partx.models.entities.product.ProductEntity;
 import com.example.partx.models.entities.user.UserEntity;
 import com.example.partx.models.enums.order.OrderStatus;
@@ -34,9 +35,9 @@ public class OrderEntity {
     private LocalDate orderDate;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<ProductEntity> products;
+    private List<OrderItemEntity> items;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
-    private OrderStatus orderStatus = OrderStatus.PENDING;
+    private OrderStatus orderStatus;
 }
