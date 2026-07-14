@@ -3,71 +3,23 @@ let currentQty = 1;
 let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadProduct();
+    // Read the product data directly out of the hidden DOM div populated by Thymeleaf
+    const dataEl = document.getElementById("pd-data");
+    if (dataEl) {
+        currentProduct = {
+            id: dataEl.getAttribute("th:data-id") || dataEl.dataset.id,
+            name: dataEl.getAttribute("th:data-name") || dataEl.dataset.name,
+            price: parseFloat(dataEl.getAttribute("th:data-price") || dataEl.dataset.price),
+            stock: parseInt(dataEl.getAttribute("th:data-stock") || dataEl.dataset.stock),
+            imageUrl: dataEl.getAttribute("th:data-image") || dataEl.dataset.image
+        };
+
+        // Initialize the wishlist button state
+        updateWishlistBtn(currentProduct.id);
+    }
 });
 
-// Load Product from URL Param
-function loadProduct() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-
-    if (!id) { showError(); return; }
-
-    fetch(`/api/products/${id}`, { credentials: "include" })
-        .then(res => {
-            if (!res.ok) throw new Error("Not found");
-            return res.json();
-        })
-        .then(product => {
-            currentProduct = product;
-            renderProduct(product);
-        })
-        .catch(() => showError());
-}
-
-// Render Product
-function renderProduct(p) {
-    document.title = `PARTX — ${p.name}`;
-
-    document.getElementById("pd-breadcrumb-name").textContent = p.name;
-    document.getElementById("pd-image").src                   = p.imageUrl || "assets/placeholder.png";
-    document.getElementById("pd-image").alt                   = p.name;
-    document.getElementById("pd-category").textContent        = p.category || "General";
-    document.getElementById("pd-name").textContent            = p.name;
-    document.getElementById("pd-price").textContent           = `$${parseFloat(p.price).toFixed(2)}`;
-    document.getElementById("pd-description").textContent     = p.description || "No description available.";
-
-    // Stock badge
-    const stockBadge = document.getElementById("pd-stock-badge");
-    const cartBtn    = document.getElementById("pd-cart-btn");
-
-    if (p.stock <= 0) {
-        stockBadge.textContent = "Out of Stock";
-        stockBadge.className   = "pd-stock-badge out-of-stock";
-        cartBtn.disabled       = true;
-        cartBtn.textContent    = "Out of Stock";
-    } else if (p.stock <= 5) {
-        stockBadge.textContent = `Only ${p.stock} left`;
-        stockBadge.className   = "pd-stock-badge low-stock";
-    } else {
-        stockBadge.textContent = "In Stock";
-        stockBadge.className   = "pd-stock-badge in-stock";
-    }
-
-    // Specs
-    document.getElementById("spec-category").textContent = p.category || "—";
-    document.getElementById("spec-stock").textContent    = p.stock;
-    document.getElementById("spec-id").textContent       = `#${p.id}`;
-
-    // Wishlist
-    updateWishlistBtn(p.id);
-
-    // Show content
-    document.getElementById("pd-loading").style.display = "none";
-    document.getElementById("pd-content").style.display = "flex";
-}
-
-// Quantity
+// Quantity Control
 function changeQty(delta) {
     if (!currentProduct) return;
     const max = currentProduct.stock > 0 ? currentProduct.stock : 1;
@@ -75,13 +27,13 @@ function changeQty(delta) {
     document.getElementById("pd-qty").textContent = currentQty;
 }
 
-// Add to Cart
+// Add to Cart Logic (Local Storage)
 function handleAddToCart() {
     const feedbackEl = document.getElementById("pd-feedback");
+    if (!feedbackEl || !currentProduct) return;
+
     feedbackEl.className  = "pd-feedback";
     feedbackEl.textContent = "";
-
-    if (!currentProduct) return;
 
     const cart     = JSON.parse(localStorage.getItem("cart") || "[]");
     const existing = cart.find(item => item.id === currentProduct.id);
@@ -103,7 +55,7 @@ function handleAddToCart() {
     setTimeout(() => { feedbackEl.textContent = ""; }, 3000);
 }
 
-// Wishlist
+// Wishlist Control
 function toggleWishlist() {
     if (!currentProduct) return;
     const idx = wishlist.indexOf(currentProduct.id);
@@ -118,6 +70,8 @@ function toggleWishlist() {
 
 function updateWishlistBtn(productId) {
     const btn = document.getElementById("pd-wishlist-btn");
+    if (!btn) return;
+
     if (wishlist.includes(productId)) {
         btn.textContent = "♥";
         btn.classList.add("active");
@@ -125,10 +79,4 @@ function updateWishlistBtn(productId) {
         btn.textContent = "♡";
         btn.classList.remove("active");
     }
-}
-
-// Error State
-function showError() {
-    document.getElementById("pd-loading").style.display = "none";
-    document.getElementById("pd-error").style.display   = "flex";
 }
