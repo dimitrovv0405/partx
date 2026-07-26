@@ -55,9 +55,6 @@ public class AuthenticationController {
         dto.setUserType(UserType.valueOf(userRegisterData.getUserType()));
         dto.setCountryOrigin(CountryOrigin.valueOf(userRegisterData.getCountryOrigin()));
 
-        // logger.info(String.format("IndexController register() dto.firstName = %s", dto.getFirstName()));
-
-
         userService.registerUser(dto);
         return new ModelAndView("redirect:/login");
     }
