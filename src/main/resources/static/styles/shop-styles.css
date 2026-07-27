@@ -162,6 +162,22 @@
     gap: 24px;
 }
 
+.product-stock {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.product-stock.out-of-stock {
+    color: #ff4d4d !important;
+}
+
+.product-stock.in-stock {
+    color: #c8dc00 !important;
+}
+
 /* --- Toolbar --- */
 .shop-toolbar {
     display: flex;

@@ -140,3 +140,57 @@ async function handleCheckout() {
         checkoutBtn.textContent = "Place Order";
     }
 }
+
+function submitCheckoutForm() {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const errorEl = document.getElementById("checkout-error");
+
+    if (cart.length === 0) {
+        if (errorEl) {
+            errorEl.textContent = "Your cart is empty.";
+            errorEl.style.display = "block";
+        }
+        return;
+    }
+
+    const form = document.getElementById("hidden-checkout-form");
+
+    // Clear the form fields entirely
+    form.innerHTML = "";
+
+    // 💡 RE-ADD THE CSRF TOKEN SAFELY DYNAMICALLY
+    // Spring Security exposes these parameters globally on forms inside Thymeleaf contexts
+    const tokenInput = document.createElement("input");
+    tokenInput.type = "hidden";
+    tokenInput.name = "_csrf"; // Default Spring Security CSRF parameter name
+
+    // Look for any existing log-out form on the page to steal the active token value
+    const activeTokenEl = document.querySelector('input[name="_csrf"]');
+    if (activeTokenEl) {
+        tokenInput.value = activeTokenEl.value;
+    } else {
+        console.error("CSRF token could not be found on the page context.");
+    }
+    form.appendChild(tokenInput);
+
+    // Loop through the items and map them cleanly to match your List format
+        cart.forEach((item, index) => {
+            const idInput = document.createElement("input");
+            idInput.type = "hidden";
+            // 💡 CHANGE THIS: Prefix with 'items'
+            idInput.name = `items[${index}].productId`;
+            idInput.value = item.id;
+
+            const qtyInput = document.createElement("input");
+            qtyInput.type = "hidden";
+            // 💡 CHANGE THIS: Prefix with 'items'
+            qtyInput.name = `items[${index}].quantity`;
+            qtyInput.value = item.quantity;
+
+            form.appendChild(idInput);
+            form.appendChild(qtyInput);
+        });
+
+    localStorage.removeItem("cart");
+    form.submit();
+}

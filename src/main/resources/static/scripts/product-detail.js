@@ -3,7 +3,6 @@ let currentQty = 1;
 let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Read the product data directly out of the hidden DOM div populated by Thymeleaf
     const dataEl = document.getElementById("pd-data");
     if (dataEl) {
         currentProduct = {

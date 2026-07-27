@@ -1,0 +1,163 @@
+.order-modal-body {
+    font-family: 'DM Sans', sans-serif;
+    color: #ffffff;
+    width: 100%;
+}
+
+.order-details-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+/* Header & Metadata */
+.modal-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+}
+
+.modal-order-id {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: #888888;
+    word-break: break-all;
+}
+
+.modal-order-id span {
+    color: #aaaaaa;
+}
+
+.modal-order-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: #aaaaaa;
+}
+
+/* Status Badges */
+.modal-status-container {
+    display: flex;
+    align-items: center;
+}
+
+.modal-status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.modal-status-badge.status-warning {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.modal-status-badge.status-success {
+    background: rgba(197, 248, 42, 0.15);
+    color: #c5f82a;
+}
+
+.modal-status-badge.status-danger {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+/* Items List Scroll View */
+.modal-items-container {
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 8px 0;
+    padding-right: 6px;
+}
+
+/* Custom Scrollbar for Modal Items */
+.modal-items-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.modal-items-container::-webkit-scrollbar-thumb {
+    background: #c5f82a;
+    border-radius: 2px;
+}
+
+.modal-items-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.modal-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.modal-item-name {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.modal-item-qty {
+    color: #888888;
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+}
+
+.modal-item-price {
+    color: #c5f82a;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.modal-no-items {
+    color: #666666;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Summary Footer */
+.modal-footer-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #333333;
+    padding-top: 14px;
+    margin-top: 6px;
+}
+
+.modal-total-label {
+    color: #888888;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.modal-total-amount {
+    color: #c5f82a;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+}
+
+/* Error View */
+.modal-error-box {
+    color: #ff3e3e;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Space Mono', monospace;
+}

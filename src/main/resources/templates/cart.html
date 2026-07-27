@@ -95,7 +95,13 @@
       <p class="error-msg" id="checkout-error" style="display:none;"></p>
       <p class="success-msg" id="checkout-success" style="display:none;"></p>
 
-      <button class="checkout-btn" id="checkout-btn" onclick="handleCheckout()">
+      <!-- Invisible form matching your ModelAndView Form Binding -->
+      <form id="hidden-checkout-form" th:action="@{/orders/checkout}" method="post" style="display: none;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      </form>
+
+      <!-- Updated button referencing the submitCheckoutForm handler -->
+      <button class="checkout-btn" id="checkout-btn" onclick="submitCheckoutForm()">
         Place Order
       </button>
 

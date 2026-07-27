@@ -81,37 +81,55 @@
         </div>
 
         <!-- Orders List -->
-        <div id="orders-list">
+        <div class="orders-list" id="orders-list" style="display: flex; flex-direction: column; gap: 20px; max-width: 900px; margin-top: 30px;">
             <div th:each="order : ${orders}"
+                 th:if="${order != null}"
                  class="order-card"
                  th:data-status="${order.status}"
-                 th:data-total="${order.totalPrice}"
-                 th:data-date="${order.createdAt}">
-                <div class="order-card-header">
-                    <div>
-                        <p class="order-id" th:text="'Order #' + ${order.id}"></p>
-                        <p class="order-date" th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}"></p>
+                 th:data-price="${order.totalPrice}"
+                 th:data-id="${order.id}"
+                 th:data-date="${order.createdAt != null ? order.createdAt : order.id}"
+                 style="background: #121212; border: 1px solid #c5f82a; border-radius: 8px; padding: 24px; display: flex; justify-content: space-between; align-items: center; transition: transform 0.2s, box-shadow 0.2s;"
+                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 20px rgba(197, 248, 42, 0.15)'"
+                 onmouseout="this.style.transform='none'; this.style.boxShadow='none'">
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="font-family: monospace; color: #666; font-size: 0.85rem;">
+                        Order ID: <span th:text="${order.id}" style="color: #aaa;"></span>
                     </div>
-                    <div>
-                        <span class="order-status-badge"
-                              th:text="${order.status}"
-                              th:classappend="'status-' + ${#strings.toLowerCase(order.status)}">
+
+                    <div style="display: inline-flex; align-items: center; margin-top: 4px;">
+                        <span th:text="${order.status}"
+                              th:style="'font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 4px; ' +
+                                (${#strings.toString(order.status) == 'PENDING' || #strings.toString(order.status) == 'PROCESSING'} ? 'background: rgba(255, 193, 7, 0.1); color: #ffc107;' :
+                                 (${#strings.toString(order.status) == 'SHIPPED' || #strings.toString(order.status) == 'DELIVERED'} ? 'background: rgba(40, 167, 69, 0.1); color: #28a745;' :
+                                 'background: rgba(220, 53, 69, 0.1); color: #dc3545;'))">
                         </span>
                     </div>
-                    <div>
-                        <p class="order-total" th:text="'$' + ${order.totalPrice}"></p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+                    <div style="text-align: right;">
+                        <span style="color: #666; font-size: 0.8rem; display: block; text-transform: uppercase; letter-spacing: 0.5px;">Total Price</span>
+                        <span th:text="${order?.totalPrice != null ? '$' + #numbers.formatDecimal(order.totalPrice, 1, 2) : '$0.00'}" style="color: #c5f82a; font-size: 1.5rem; font-weight: 700; font-family: monospace;">
+                        </span>
                     </div>
-                    <button class="view-details-btn"
+
+                    <button type="button"
                             th:data-id="${order.id}"
-                            onclick="openModal(this)">
+                            onclick="openModal(this)"
+                            style="background: transparent; border: 1px solid #ffffff; color: #ffffff; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;"
+                            onmouseover="this.style.background='#ffffff'; this.style.color='#000000'"
+                            onmouseout="this.style.background='transparent'; this.style.color='#ffffff'">
                         View Details
                     </button>
                 </div>
+
             </div>
         </div>
 
         <p class="empty-orders-msg" id="empty-orders-msg"
-           th:if="${orders == null or #lists.isEmpty(orders)}">
+           th:if="${orders == null or #lists.isEmpty(orders)}" style="display: block;">
             No orders found. <a th:href="@{/shop}">Start shopping</a>
         </p>
 

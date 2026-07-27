@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/styles/order-modal-content-styles.css}">
+<body>
+
+<div th:fragment="orderModalContent">
+
+  <div th:if="${error != null}" style="color: #ff3e3e; text-align: center; padding: 20px;">
+    <p th:text="${error}">Order not found.</p>
+  </div>
+
+  <div th:if="${order != null}" style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+
+    <div style="font-family: monospace; font-size: 0.85rem; color: #888;">
+      Order ID: <span th:text="${order.id}" style="color: #ccc;"></span>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span th:text="${order.status}"
+                  style="font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 4px; background: rgba(197, 248, 42, 0.1); color: #c5f82a;">
+            </span>
+      <span th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'MMM dd, yyyy') : 'N/A'}"
+            style="font-size: 0.85rem; color: #aaa; font-family: monospace;">
+            </span>
+    </div>
+
+    <div style="max-height: 220px; overflow-y: auto; margin: 10px 0;">
+      <div th:each="item : ${order.items}"
+           style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+        <div>
+          <div th:text="${item.productName}" style="color: #fff; font-weight: 600; font-size: 0.95rem;">Product Name</div>
+          <div th:text="'Qty: ' + ${item.quantity}" style="color: #888; font-size: 0.8rem; font-family: monospace;">Qty: 1</div>
+        </div>
+        <div th:text="${item.price != null ? '$' + #numbers.formatDecimal(item.price, 1, 2) : '$0.00'}"
+             style="color: #c5f82a; font-family: monospace; font-weight: bold;">
+        </div>
+      </div>
+
+      <p th:if="${#lists.isEmpty(order.items)}" style="color: #666; font-size: 0.85rem;">No items attached to this order.</p>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 12px;">
+      <span style="color: #888; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Total Price</span>
+      <span th:text="${order.totalPrice != null ? '$' + #numbers.formatDecimal(order.totalPrice, 1, 2) : '$0.00'}"
+            style="color: #c5f82a; font-size: 1.4rem; font-weight: 700; font-family: monospace;">
+            </span>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

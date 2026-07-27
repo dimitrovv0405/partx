@@ -24,7 +24,6 @@ function applyFilters() {
     const inStockOnly = document.getElementById("in-stock-only").checked;
     const sortValue = document.getElementById("sort-select").value;
 
-    // 💡 CHANGE HERE: Filter against the saved MASTER list, not the modified DOM grid
     let filtered = allProductCards.filter(card => {
         const name = card.getAttribute("data-name").toLowerCase();
         const price = parseFloat(card.getAttribute("data-price"));

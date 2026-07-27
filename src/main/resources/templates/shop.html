@@ -142,8 +142,8 @@
                         </p>
                         <p class="product-price" th:text="'$' + ${product.price}"></p>
                         <p class="product-stock"
-                           th:text="${product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}"
-                           th:classappend="${product.stockQuantity > 0 ? ' in-stock' : ' out-of-stock'}">
+                           th:class="${product.stockQuantity > 0} ? 'product-stock in-stock' : 'product-stock out-of-stock'"
+                           th:text="${product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}">
                         </p>
                     </div>
                 </a>

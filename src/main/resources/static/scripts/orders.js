@@ -1,89 +1,116 @@
- let selectedStatus = "all";
+let selectedStatus = "all";
+let allCards = [];
 
- document.addEventListener("DOMContentLoaded", () => {
-     renderOrders();
- });
+document.addEventListener("DOMContentLoaded", () => {
+    // Cache original cards from DOM on initial page load
+    const container = document.getElementById("orders-list");
+    if (container) {
+        allCards = Array.from(container.querySelectorAll(".order-card"));
+    }
+    renderOrders();
+});
 
- function selectStatus(btn) {
-     document.querySelectorAll(".status-filter-btn").forEach(b => b.classList.remove("active"));
-     btn.classList.add("active");
-     selectedStatus = btn.getAttribute("data-status");
-     renderOrders();
- }
+function selectStatus(btn) {
+    document.querySelectorAll(".status-filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedStatus = btn.getAttribute("data-status");
+    renderOrders();
+}
 
- function renderOrders() {
-     const sortValue = document.getElementById("sort-select").value;
-     const allCards = Array.from(document.querySelectorAll(".order-card"));
+function renderOrders() {
+    const list = document.getElementById("orders-list");
+    if (!list) return;
 
-     let filtered = allCards.filter(card => {
-         const status = card.getAttribute("data-status");
-         return selectedStatus === "all" || status === selectedStatus;
-     });
+    const sortSelect = document.getElementById("sort-select");
+    const sortValue = sortSelect ? sortSelect.value : "newest";
 
-     filtered.sort((a, b) => {
-         const dateA = new Date(a.getAttribute("data-date"));
-         const dateB = new Date(b.getAttribute("data-date"));
-         const totalA = parseFloat(a.getAttribute("data-total"));
-         const totalB = parseFloat(b.getAttribute("data-total"));
+    // 1. Filter by status
+    let filtered = allCards.filter(card => {
+        const cardStatus = card.getAttribute("data-status");
+        if (!selectedStatus || selectedStatus.toLowerCase() === "all") return true;
+        return cardStatus && cardStatus.toUpperCase() === selectedStatus.toUpperCase();
+    });
 
-         if (sortValue === "newest") return dateB - dateA;
-         if (sortValue === "oldest") return dateA - dateB;
-         if (sortValue === "total-desc") return totalB - totalA;
-         if (sortValue === "total-asc") return totalA - totalB;
-         return 0;
-     });
+    // 2. Sort by selected dropdown value
+    filtered.sort((a, b) => {
+        const totalA = parseFloat(a.getAttribute("data-price") || a.getAttribute("data-total")) || 0;
+        const totalB = parseFloat(b.getAttribute("data-price") || b.getAttribute("data-total")) || 0;
 
-     const list = document.getElementById("orders-list");
-     list.innerHTML = "";
-     filtered.forEach(card => list.appendChild(card));
+        // Helper function to safely extract a numeric timestamp
+        const parseDate = (card) => {
+            const rawDate = card.getAttribute("data-date");
+            if (rawDate && !isNaN(Date.parse(rawDate))) {
+                return new Date(rawDate).getTime();
+            }
+            // Fallback to numeric order ID if available, otherwise 0
+            const rawId = card.getAttribute("data-id") || "0";
+            const numericId = parseInt(rawId.replace(/\D/g, ""), 10);
+            return isNaN(numericId) ? 0 : numericId;
+        };
 
-     const emptyMsg = document.getElementById("empty-orders-msg");
-     if (emptyMsg) {
-         emptyMsg.style.display = filtered.length === 0 ? "block" : "none";
-     }
- }
+        const dateA = parseDate(a);
+        const dateB = parseDate(b);
 
- async function openModal(btn) {
-     const orderId = btn.getAttribute("data-id");
-     const modalOverlay = document.getElementById("modal-overlay");
-     const modalContent = document.getElementById("modal-content");
+        switch (sortValue) {
+            case "newest":
+                return dateB - dateA;
+            case "oldest":
+                return dateA - dateB;
+            case "total-desc":
+                return totalB - totalA;
+            case "total-asc":
+                return totalA - totalB;
+            default:
+                return 0;
+        }
+    });
 
-     modalContent.innerHTML = "<p>Loading...</p>";
-     modalOverlay.style.display = "flex";
+    // 3. Render DOM nodes cleanly
+    list.innerHTML = "";
+    filtered.forEach(card => {
+        card.style.display = "flex";
+        list.appendChild(card);
+    });
 
-     try {
-         const response = await fetch(`/api/orders/${orderId}`, {
-             credentials: "include"
-         });
+    // 4. Manage empty state visibility
+    const emptyMsg = document.getElementById("empty-orders-msg");
+    if (emptyMsg) {
+        emptyMsg.style.display = filtered.length === 0 ? "block" : "none";
+    }
+}
 
-         if (!response.ok) {
-             modalContent.innerHTML = "<p>Failed to load order details.</p>";
-             return;
-         }
+async function openModal(btn) {
+const orderId = btn.getAttribute("data-id");
+    const modalOverlay = document.getElementById("modal-overlay");
+    const modalContent = document.getElementById("modal-content");
 
-         const order = await response.json();
+    if (!modalOverlay || !modalContent) return;
 
-         const itemsHTML = order.items.map(item => `
-             <div class="modal-item">
-                 <span class="modal-item-name">${item.productName}</span>
-                 <span class="modal-item-qty">x${item.quantity}</span>
-                 <span class="modal-item-price">$${parseFloat(item.price).toFixed(2)}</span>
-             </div>
-         `).join("");
+    modalContent.innerHTML = `<p style="color: #888; text-align: center; font-family: monospace;">Loading order details...</p>`;
+    modalOverlay.style.display = "flex";
 
-         modalContent.innerHTML = `
-             <p><strong>Order #${order.id}</strong></p>
-             <p>Status: <span class="order-status-badge status-${order.status.toLowerCase()}">${order.status}</span></p>
-             <p>Date: ${new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</p>
-             <div class="modal-items-list">${itemsHTML}</div>
-             <p class="modal-total"><strong>Total: $${parseFloat(order.totalPrice).toFixed(2)}</strong></p>
-         `;
-     } catch {
-         modalContent.innerHTML = "<p>Something went wrong. Please try again.</p>";
-     }
- }
+    try {
+        // Calls the ModelAndView HTML fragment controller endpoint
+        const response = await fetch(`/orders/modal/${orderId}`);
 
- function closeModal() {
-     document.getElementById("modal-overlay").style.display = "none";
-     document.getElementById("modal-content").innerHTML = "";
- }
+        if (!response.ok) {
+            modalContent.innerHTML = `<p style="color: #ff3e3e; text-align: center;">Failed to load order details.</p>`;
+            return;
+        }
+
+        const html = await response.text();
+        modalContent.innerHTML = html;
+
+    } catch (err) {
+        console.error("Fetch error:", err);
+        modalContent.innerHTML = `<p style="color: #ff3e3e; text-align: center;">Something went wrong. Please try again.</p>`;
+    }
+}
+
+function closeModal() {
+    const modalOverlay = document.getElementById("modal-overlay");
+    const modalContent = document.getElementById("modal-content");
+
+    if (modalOverlay) modalOverlay.style.display = "none";
+    if (modalContent) modalContent.innerHTML = "";
+}

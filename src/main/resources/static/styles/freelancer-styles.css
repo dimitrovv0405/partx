@@ -203,6 +203,13 @@
     vertical-align: middle;
 }
 
+.freelance-table td:last-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
 .freelance-table tbody tr:last-child td {
     border-bottom: none;
 }
@@ -225,7 +232,6 @@
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
-    margin-right: 6px;
 }
 
 .tbl-btn-edit {
@@ -261,7 +267,7 @@
     color: #0e0d09;
 }
 
-/* --- Status Badge (reuse from orders) --- */
+/* --- Status Badge --- */
 .status-badge {
     padding: 4px 12px;
     border-radius: 20px;
@@ -286,19 +292,23 @@
     padding: 40px 0;
 }
 
-/* --- Modal --- */
+/* --- Modal Overlays & Display --- */
 .modal-overlay {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.75);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
+    z-index: 9999;
 }
 
+.modal-overlay.active,
 .modal-overlay.open {
-    display: flex;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-box {
