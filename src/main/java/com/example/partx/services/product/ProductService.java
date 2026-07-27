@@ -2,7 +2,6 @@ package com.example.partx.services.product;
 
 import com.example.partx.models.dtos.category.CategoryDto;
 import com.example.partx.models.dtos.product.ProductDto;
-import com.example.partx.models.entities.category.CategoryEntity;
 import com.example.partx.models.entities.product.ProductEntity;
 import com.example.partx.repositories.product.ProductRepository;
 import lombok.RequiredArgsConstructor;

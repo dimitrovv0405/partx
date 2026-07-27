@@ -1,7 +1,6 @@
 package com.example.partx.models.entities.order;
 
 import com.example.partx.models.entities.orderItem.OrderItemEntity;
-import com.example.partx.models.entities.product.ProductEntity;
 import com.example.partx.models.entities.user.UserEntity;
 import com.example.partx.models.enums.order.OrderStatus;
 import jakarta.persistence.*;

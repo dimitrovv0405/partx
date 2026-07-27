@@ -9,6 +9,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class ProductAddDto {
+    private UUID id;
     private String name;
     private String description;
     private BigDecimal price;

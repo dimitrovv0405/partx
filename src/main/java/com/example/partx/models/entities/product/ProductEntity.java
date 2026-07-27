@@ -1,15 +1,14 @@
 package com.example.partx.models.entities.product;
 
 import com.example.partx.models.entities.category.CategoryEntity;
-import com.example.partx.models.entities.order.OrderEntity;
+import com.example.partx.models.entities.user.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
+//TODO: update on github
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,13 +34,13 @@ public class ProductEntity {
     private Integer stockAmount;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private OrderEntity order;
-
-    @ManyToOne
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private UserEntity owner;
 }

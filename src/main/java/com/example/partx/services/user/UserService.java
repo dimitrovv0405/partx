@@ -46,15 +46,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserDto getById(UUID id) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(
-                        () -> new RuntimeException("User with id [%s] does not exist.".formatted(id))
-                );
-
-        return UserMapper.toUserDto(user);
-    }
-
     public UserDto getByUsername(String username) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(
